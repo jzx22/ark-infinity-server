@@ -1,5 +1,4 @@
 FROM ubuntu:20.04
-
 MAINTAINER jzx22
 
 # Var for first config
@@ -18,7 +17,7 @@ ENV UPDATEONSTART 1
 # if the server is backup when start with docker start
 ENV BACKUPONSTART 1
 #  Tag on github for ark server tools
-ENV GIT_TAG v1.6.02
+ENV GIT_TAG v1.6.53
 # Server PORT (you can't remap with docker, it doesn't work)
 ENV SERVERPORT 27015
 # Steam port (you can't remap with docker, it doesn't work)
@@ -34,7 +33,20 @@ ENV GID 1000
 
 # Install dependencies
 RUN apt-get update &&\
-    apt-get install -y curl lib32gcc1 lsof git
+    apt-get install -y \
+    perl-modules \
+    curl \
+    lsof \
+    libc6-i386 \
+    lib32gcc1 \
+    bzip2 \
+    >=bash-4.0 \
+    >=coreutils-7.6 \
+    findutils \
+    perl \
+    rsync \
+    sed \
+    tar
 
 # Enable passwordless sudo for users under the "sudo" group
 RUN sed -i.bkp -e \
