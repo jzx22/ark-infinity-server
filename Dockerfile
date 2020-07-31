@@ -31,7 +31,7 @@ ENV UID 1000
 # GID of the user steam
 ENV GID 1000
 
-# Install dependencies
+# Install ark-server-tools dependencies
 RUN apt-get update &&\
     apt-get install -y \
     perl-modules \
@@ -93,23 +93,27 @@ COPY arkmanager-system.cfg /etc/arkmanager/arkmanager.cfg
 COPY instance.cfg /etc/arkmanager/instances/main.cfg
 RUN chown steam -R /ark && chmod 755 -R /ark
 
-#USER steam
-# download steamcmd
-RUN mkdir /home/steam/steamcmd &&\
-	cd /home/steam/steamcmd &&\
-	curl http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -vxz
+#switch to steam user
+USER steam
+
+#Steam setup
+RUN sudo apt-get install lib32stdc++6
+RUN sudo add-apt-repository multiverse
+RUN sudo dpkg --add-architecture i386
+RUN sudo apt update
+RUN sudo apt install lib32gcc1 steamcmd
 
 # First run is on anonymous to download the app
-# We can't download from docker hub anymore -_-
-#RUN /home/steam/steamcmd/steamcmd.sh +login anonymous +quit
-EXPOSE ${STEAMPORT} 32330 ${SERVERPORT}
+RUN cd ~
+RUN steamcmd +login anonymous +quit
 
-# Add UDP
+#Expose ports
+EXPOSE ${STEAMPORT} 32330 ${SERVERPORT}
 EXPOSE ${STEAMPORT}/udp ${SERVERPORT}/udp
 
 VOLUME  /ark
 
-# Change the working directory to /arkd
+# Change the working directory to /ark
 WORKDIR /ark
 
 # Update game launch the game.
