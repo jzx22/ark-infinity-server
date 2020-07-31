@@ -19,7 +19,7 @@ ENV BACKUPONSTART 1
 #  Tag on github for ark server tools
 ENV GIT_TAG v1.6.53
 # Server PORT (you can't remap with docker, it doesn't work)
-ENV SERVERPORT 27015
+ENV SERVERPORT 27016
 # Steam port (you can't remap with docker, it doesn't work)
 ENV STEAMPORT 7778
 # if the server should backup after stopping
@@ -104,7 +104,7 @@ RUN sudo apt update
 RUN sudo apt install lib32gcc1 steamcmd
 
 # First run is on anonymous to download the app
-RUN cd ~
+WORKDIR /home/steam
 RUN steamcmd +login anonymous +quit
 
 #Expose ports
