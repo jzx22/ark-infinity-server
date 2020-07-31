@@ -1,5 +1,6 @@
 FROM ubuntu:20.04
-MAINTAINER jzx22
+LABEL maintainer="jzx222@gmail.com"
+
 
 # Var for first config
 # Server Name
@@ -93,7 +94,7 @@ COPY arkmanager-system.cfg /etc/arkmanager/arkmanager.cfg
 COPY instance.cfg /etc/arkmanager/instances/main.cfg
 RUN chown steam -R /ark && chmod 755 -R /ark
 
-#switch to steam user
+#Switch to steam user
 USER steam
 
 #Steam setup
