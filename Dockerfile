@@ -31,9 +31,9 @@ RUN apt-get update &&\
     tar
 
 # Enable passwordless sudo for users under the "sudo" group
-RUN sed -i.bkp -e \
-	's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' /etc/sudoers \
-	/etc/sudoers
+#RUN sed -i.bkp -e \
+#	's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' /etc/sudoers \
+#	/etc/sudoers
 
 # Run commands as the steam user
 RUN adduser \
