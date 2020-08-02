@@ -18,6 +18,7 @@ RUN apt-get update &&\
     apt-get install -y \
     perl-modules \
     curl \
+    git \
     lsof \
     libc6-i386 \
     lib32gcc1 \
