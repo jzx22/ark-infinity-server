@@ -1,7 +1,6 @@
 FROM ubuntu:20.04
 LABEL maintainer="jzx222@gmail.com"
 
-
 # Var for first config
 # Server Name
 ENV SESSIONNAME "INFINITY ARK"
@@ -20,7 +19,7 @@ ENV BACKUPONSTART 1
 #  Tag on github for ark server tools
 ENV GIT_TAG v1.6.53
 # Server PORT (you can't remap with docker, it doesn't work)
-ENV SERVERPORT 27016
+ENV SERVERPORT 27015
 # Steam port (you can't remap with docker, it doesn't work)
 ENV STEAMPORT 7778
 # if the server should backup after stopping
@@ -92,7 +91,7 @@ COPY arkmanager-system.cfg /etc/arkmanager/arkmanager.cfg
 
 # Define default config file in /etc/arkmanager
 COPY instance.cfg /etc/arkmanager/instances/main.cfg
-RUN chown steam -R /ark && chmod 755 -R /ark
+#RUN chown steam -R /ark && chmod 755 -R /ark
 
 #Switch to steam user
 USER steam
@@ -108,14 +107,17 @@ RUN sudo apt install lib32gcc1 steamcmd
 WORKDIR /home/steam
 RUN steamcmd +login anonymous +quit
 
+#Install the server
+RUN arkmanager install
+
 #Expose ports
 EXPOSE ${STEAMPORT} 32330 ${SERVERPORT}
 EXPOSE ${STEAMPORT}/udp ${SERVERPORT}/udp
 
-VOLUME  /ark
+VOLUME  /home/steam/ARK
 
 # Change the working directory to /ark
-WORKDIR /ark
+WORKDIR /home/steam/ARK
 
-# Update game launch the game.
-ENTRYPOINT ["/home/steam/user.sh"]
+# Start the server
+ENTRYPOINT ["arkmanager", "start", "@all"]
