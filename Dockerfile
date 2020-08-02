@@ -64,14 +64,9 @@ RUN adduser \
 RUN usermod -a -G sudo steam
 
 # Copy & rights to folders
-COPY run.sh /home/steam/run.sh
-COPY user.sh /home/steam/user.sh
 COPY crontab /home/steam/crontab
-COPY arkmanager-user.cfg /home/steam/arkmanager.cfg
+COPY arkmanager.cfg /home/steam/arkmanager.cfg
 RUN touch /root/.bash_profile
-RUN chmod 777 /home/steam/run.sh
-RUN chmod 777 /home/steam/user.sh
-RUN mkdir  /ark
 
 # We use the git method, because api github has a limit ;)
 RUN  git clone https://github.com/FezVrasta/ark-server-tools.git /home/steam/ark-server-tools
@@ -87,7 +82,7 @@ RUN ./install.sh steam --install-service
 RUN ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager
 
 # Define default config file in /etc/arkmanager
-COPY arkmanager-system.cfg /etc/arkmanager/arkmanager.cfg
+COPY arkmanager.cfg /etc/arkmanager/arkmanager.cfg
 
 # Define default config file in /etc/arkmanager
 COPY instance.cfg /etc/arkmanager/instances/main.cfg
