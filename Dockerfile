@@ -2,30 +2,12 @@ FROM ubuntu:20.04
 LABEL maintainer="jzx222@gmail.com"
 
 # Var for first config
-# Server Name
-ENV SESSIONNAME "INFINITY ARK"
-# Map name
-ENV SERVERMAP "TheIsland"
-# Server password
-ENV SERVERPASSWORD ""
-# Admin password
-ENV ADMINPASSWORD "adminpassword"
-# Nb Players
-ENV NBPLAYERS 30
-# If the server is updating when start with docker start
-ENV UPDATEONSTART 1
-# if the server is backup when start with docker start
-ENV BACKUPONSTART 1
 #  Tag on github for ark server tools
 ENV GIT_TAG v1.6.53
 # Server PORT (you can't remap with docker, it doesn't work)
 ENV SERVERPORT 27015
 # Steam port (you can't remap with docker, it doesn't work)
 ENV STEAMPORT 7778
-# if the server should backup after stopping
-ENV BACKUPONSTOP 0
-# If the server warn the players before stopping
-ENV WARNONSTOP 0
 # UID of the user steam
 ENV UID 1000
 # GID of the user steam
