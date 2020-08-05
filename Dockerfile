@@ -16,6 +16,7 @@ ENV GID 1000
 # Install ark-server-tools dependencies
 RUN apt-get update &&\
     apt-get install -y \
+    apt-utils \
     perl-modules \
     curl \
     git \
@@ -71,19 +72,30 @@ COPY arkmanager.cfg /etc/arkmanager/arkmanager.cfg
 COPY instance.cfg /etc/arkmanager/instances/main.cfg
 #RUN chown steam -R /ark && chmod 755 -R /ark
 
-#Switch to steam user
-USER steam
+#Steam dependency setup
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    lib32stdc++6 \
+    software-properties-common
+RUN add-apt-repository multiverse
+RUN dpkg --add-architecture i386
+RUN apt-get update
+RUN apt-get install -y lib32gcc1
 
-#Steam setup
-RUN sudo apt-get install lib32stdc++6
-RUN sudo add-apt-repository multiverse
-RUN sudo dpkg --add-architecture i386
-RUN sudo apt update
-RUN sudo apt install lib32gcc1 steamcmd
+#Agree to steamcmd licence beforehand and install
+RUN echo steam steam/question select "I AGREE" | debconf-set-selections
+RUN echo steam steam/license note '' | debconf-set-selections
+RUN apt-get install -y steamcmd
+
+WORKDIR /usr/lib/games/steam
+#RUN chmod +x steamcmd
+
+#Switch to steam user
+#USER steam
 
 # First run is on anonymous to download the app
-WORKDIR /home/steam
-RUN steamcmd +login anonymous +quit
+WORKDIR /usr/lib/games/steam
+RUN ls -la
+RUN /usr/lib/games/steam/steamcmd.sh +login anonymous +quit
 
 #Install the server
 RUN arkmanager install
