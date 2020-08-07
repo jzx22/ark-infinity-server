@@ -1,8 +1,8 @@
-FROM ubuntu:20.04
+FROM ubuntu:18.04
 LABEL maintainer="jzx222@gmail.com"
 
 # Var for first config
-#  Tag on github for ark server tools
+# Tag on github for ark server tools
 ENV GIT_TAG v1.6.53
 # Server PORT (you can't remap with docker, it doesn't work)
 ENV SERVERPORT 27015
@@ -77,25 +77,24 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     lib32stdc++6 \
     software-properties-common
 RUN add-apt-repository multiverse
+RUN apt update
 RUN dpkg --add-architecture i386
-RUN apt-get update
+RUN apt-get update -y
 RUN apt-get install -y lib32gcc1
 
 #Agree to steamcmd licence beforehand and install
 RUN echo steam steam/question select "I AGREE" | debconf-set-selections
 RUN echo steam steam/license note '' | debconf-set-selections
-RUN apt-get install -y steamcmd
-
-WORKDIR /usr/lib/games/steam
-#RUN chmod +x steamcmd
-
-#Switch to steam user
-#USER steam
+#RUN apt-get install -y steamcmd
+RUN apt-get install -y --no-install-recommends ca-certificates locales steamcmd
 
 # First run is on anonymous to download the app
-WORKDIR /usr/lib/games/steam
-RUN ls -la
-RUN /usr/lib/games/steam/steamcmd.sh +login anonymous +quit
+RUN ln -s /usr/games/steamcmd /usr/bin/steamcmd
+
+#Switch to steam user
+USER steam
+WORKDIR /usr/games/
+RUN steamcmd +login anonymous +quit
 
 #Install the server
 RUN arkmanager install
