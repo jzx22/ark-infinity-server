@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 LABEL maintainer="jzx222@gmail.com"
 
-# Var for first config
+# Vars for first config
 # Tag on github for ark server tools
 ENV GIT_TAG v1.6.53
 # Server PORT (you can't remap with docker, it doesn't work)
@@ -32,11 +32,6 @@ RUN apt-get update &&\
     sed \
     tar
 
-# Enable passwordless sudo for users under the "sudo" group
-#RUN sed -i.bkp -e \
-#	's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' /etc/sudoers \
-#	/etc/sudoers
-
 # Run commands as the steam user
 RUN adduser \
 	--disabled-login \
@@ -57,7 +52,7 @@ RUN  git clone https://github.com/FezVrasta/ark-server-tools.git /home/steam/ark
 WORKDIR /home/steam/ark-server-tools/
 RUN  git checkout $GIT_TAG
 
-# Install
+# Install arkmanager
 WORKDIR /home/steam/ark-server-tools/tools
 RUN chmod +x install.sh
 RUN ./install.sh steam --install-service
@@ -70,7 +65,6 @@ COPY arkmanager.cfg /etc/arkmanager/arkmanager.cfg
 
 # Define default config file in /etc/arkmanager
 COPY instance.cfg /etc/arkmanager/instances/main.cfg
-#RUN chown steam -R /ark && chmod 755 -R /ark
 
 #Steam dependency setup
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -88,16 +82,18 @@ RUN echo steam steam/license note '' | debconf-set-selections
 #RUN apt-get install -y steamcmd
 RUN apt-get install -y --no-install-recommends ca-certificates locales steamcmd
 
-# First run is on anonymous to download the app
+# Create symlink for steamcmd
 RUN ln -s /usr/games/steamcmd /usr/bin/steamcmd
 
 #Switch to steam user
 USER steam
+
+# First run is on anonymous to download the app
 WORKDIR /usr/games/
 RUN steamcmd +login anonymous +quit
 
 #Install the server
-RUN arkmanager install
+#RUN arkmanager install
 
 #Expose ports
 EXPOSE ${STEAMPORT} 32330 ${SERVERPORT}
