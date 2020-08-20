@@ -63,10 +63,11 @@ RUN ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager
 # Define default config file in /etc/arkmanager
 COPY arkmanager.cfg /etc/arkmanager/arkmanager.cfg
 
-# Define default config file in /etc/arkmanager
+# Define default instance config file in /etc/arkmanager
 COPY instance.cfg /etc/arkmanager/instances/main.cfg
 
 #Steam dependency setup
+RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     lib32stdc++6 \
     software-properties-common
@@ -94,6 +95,7 @@ RUN steamcmd +login anonymous +quit
 
 #Install the server
 #RUN arkmanager install
+RUN arkmanager upgrade-tools
 
 #Expose ports
 EXPOSE ${STEAMPORT} 32330 ${SERVERPORT}
@@ -105,4 +107,5 @@ VOLUME  /home/steam/ARK
 WORKDIR /home/steam/ARK
 
 # Start the server
-ENTRYPOINT ["arkmanager", "start", "@all"]
+#ENTRYPOINT ["arkmanager", "start", "@all"]
+ENTRYPOINT ["arkmanager", "install"]
